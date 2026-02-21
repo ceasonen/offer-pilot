@@ -33,7 +33,6 @@ export function createLLMProvider(config: ProviderConfig) {
   const provider = createOpenAI({
     apiKey: config.apiKey,
     baseURL,
-    compatibility: 'compatible',
   });
 
   return {

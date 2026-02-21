@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useChat } from '@ai-sdk/react';
+import { UIMessage } from 'ai';
 import { InterviewerAvatar } from '@/components/interview/InterviewerAvatar';
 import { InterviewTimer } from '@/components/interview/InterviewTimer';
 import { InterviewProgress } from '@/components/interview/InterviewProgress';
@@ -14,7 +15,6 @@ import { CodeEditor } from '@/components/interview/CodeEditor';
 import { useInterviewStore } from '@/store/interview-store';
 import { useHistoryStore } from '@/store/history-store';
 import { useConfigStore } from '@/store/config-store';
-import { buildInterviewerPrompt } from '@/lib/prompts/interviewer';
 import { getCompanyName, getRoleName, buildFallbackReport } from '@/lib/utils/report-gen';
 import { inferPhaseFromMessages } from '@/lib/interview/flow-engine';
 import { upsertReport } from '@/lib/utils/storage';
@@ -34,15 +34,33 @@ const ROUND_NAME_MAP: Record<InterviewRound, string> = {
   hr: 'HR 面',
 };
 
-interface UIMessage {
+type ChatRole = 'assistant' | 'user' | 'system';
+
+interface DisplayMessage {
   id: string;
-  role: string;
+  role: ChatRole;
   content: string;
+}
+
+function normalizeRole(role: UIMessage['role']): ChatRole {
+  if (role === 'assistant') return 'assistant';
+  if (role === 'system') return 'system';
+  return 'user';
+}
+
+function extractText(message: UIMessage) {
+  return message.parts
+    .filter((part): part is Extract<(typeof message.parts)[number], { type: 'text' }> => part.type === 'text')
+    .map((part) => part.text)
+    .join('\n')
+    .trim();
 }
 
 export function InterviewRoom() {
   const router = useRouter();
+  const [input, setInput] = useState('');
   const [code, setCode] = useState('// 算法题作答区\nfunction solve() {\n  return null;\n}');
+  const bootstrapped = useRef(false);
 
   const config = useInterviewStore((s) => s.config);
   const evaluations = useInterviewStore((s) => s.evaluations);
@@ -57,21 +75,9 @@ export function InterviewRoom() {
   const apiKey = useConfigStore((s) => s.apiKey);
   const hydrateConfig = useConfigStore((s) => s.hydrate);
 
-  const systemPrompt = useMemo(() => (config ? buildInterviewerPrompt(config) : ''), [config]);
+  const { messages, sendMessage, status } = useChat();
 
-  const { messages, input, setInput, append, isLoading } = useChat({
-    api: '/api/chat',
-    body: {
-      config,
-      providerConfig: {
-        provider,
-        apiKey,
-      },
-    },
-    initialMessages: systemPrompt
-      ? [{ id: 'system-seed', role: 'system', content: systemPrompt }]
-      : [],
-  });
+  const isLoading = status !== 'ready';
 
   useEffect(() => {
     hydrateConfig();
@@ -84,15 +90,36 @@ export function InterviewRoom() {
   }, [config, router]);
 
   useEffect(() => {
-    if (!config) return;
-    if (messages.length === 1) {
-      append({ role: 'user', content: '[面试开始，请先做开场。]' });
-    }
-  }, [append, config, messages.length]);
+    if (!config || bootstrapped.current || messages.length > 0) return;
+
+    bootstrapped.current = true;
+    void sendMessage(
+      { text: '[面试开始，请先做开场。]' },
+      {
+        body: {
+          config,
+          providerConfig: {
+            provider,
+            apiKey,
+          },
+        },
+      },
+    );
+  }, [apiKey, config, messages.length, provider, sendMessage]);
+
+  const visibleMessages: DisplayMessage[] = useMemo(
+    () =>
+      (messages as UIMessage[])
+        .map((item) => ({
+          id: item.id,
+          role: normalizeRole(item.role),
+          content: extractText(item),
+        }))
+        .filter((item) => item.content.length > 0),
+    [messages],
+  );
 
   if (!config) return null;
-
-  const visibleMessages = messages as UIMessage[];
 
   const submitAnswer = async () => {
     const content = input.trim();
@@ -102,7 +129,18 @@ export function InterviewRoom() {
       .reverse()
       .find((item) => item.role === 'assistant')?.content;
 
-    await append({ role: 'user', content });
+    await sendMessage(
+      { text: content },
+      {
+        body: {
+          config,
+          providerConfig: {
+            provider,
+            apiKey,
+          },
+        },
+      },
+    );
 
     if (lastQuestion) {
       try {
@@ -138,12 +176,12 @@ export function InterviewRoom() {
     const normalizedMessages: InterviewMessage[] = visibleMessages
       .filter((item) => item.role !== 'system')
       .map((item, index, arr) => {
-        const partial = arr.slice(0, index + 1).map((msg) => ({
+        const partial: InterviewMessage[] = arr.slice(0, index + 1).map<InterviewMessage>((msg) => ({
           id: msg.id,
           role: msg.role === 'assistant' ? 'interviewer' : 'candidate',
           content: msg.content,
           timestamp: Date.now(),
-          phase: 'greeting' as const,
+          phase: 'greeting',
         }));
 
         return {
@@ -152,7 +190,7 @@ export function InterviewRoom() {
           content: item.content,
           timestamp: Date.now(),
           phase: inferPhaseFromMessages(partial),
-        };
+        } as InterviewMessage;
       });
 
     let report = buildFallbackReport({
