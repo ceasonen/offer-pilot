@@ -1,0 +1,8 @@
+[
+  {
+    "id": "algo-array-001",
+    "question": "如何在 O(n) 时间内找出数组中的多数元素？",
+    "difficulty": 2,
+    "tags": ["algorithm", "array"]
+  }
+]

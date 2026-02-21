@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sys-hc-001",
+    "question": "如何设计一个支持百万 QPS 的秒杀系统？",
+    "difficulty": 5,
+    "tags": ["system-design", "high-concurrency"]
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "py-gil-001",
+    "question": "Python GIL 对并发有什么影响？",
+    "difficulty": 2,
+    "tags": ["python", "concurrency"]
+  }
+]

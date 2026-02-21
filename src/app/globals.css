@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+
+:root {
+  --app-bg: #f4f7ff;
+  --app-text: #0a1225;
+  --card-bg: #ffffff;
+  --border-color: #dce4f5;
+}
+
+html[data-theme='dark'] {
+  --app-bg: #040915;
+  --app-text: #dbe9ff;
+  --card-bg: #0a1225;
+  --border-color: #1f2b45;
+}
+
+@theme inline {
+  --font-sans: var(--font-display);
+  --font-mono: var(--font-mono);
+  --color-app-bg: var(--app-bg);
+  --color-app-text: var(--app-text);
+  --color-card-bg: var(--card-bg);
+}
+
+* {
+  border-color: var(--border-color);
+}
+
+body {
+  font-family: var(--font-display), 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(34, 211, 238, 0.1), transparent 30%),
+    radial-gradient(circle at 88% 16%, rgba(250, 204, 21, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0));
+}

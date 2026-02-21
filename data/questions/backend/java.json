@@ -1,0 +1,8 @@
+[
+  {
+    "id": "java-jmm-001",
+    "question": "请解释 Java 内存模型里的 happens-before。",
+    "difficulty": 3,
+    "tags": ["java", "jmm"]
+  }
+]

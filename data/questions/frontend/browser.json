@@ -1,0 +1,8 @@
+[
+  {
+    "id": "browser-cache-001",
+    "question": "浏览器强缓存和协商缓存的区别是什么？",
+    "difficulty": 2,
+    "tags": ["browser", "http"]
+  }
+]

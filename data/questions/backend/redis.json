@@ -1,0 +1,8 @@
+[
+  {
+    "id": "redis-consistency-001",
+    "question": "Redis 缓存和数据库双写一致性如何保障？",
+    "difficulty": 4,
+    "tags": ["redis", "consistency"]
+  }
+]

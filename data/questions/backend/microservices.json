@@ -1,0 +1,8 @@
+[
+  {
+    "id": "microservice-trace-001",
+    "question": "微服务场景下如何进行链路追踪和故障定位？",
+    "difficulty": 4,
+    "tags": ["microservices", "observability"]
+  }
+]

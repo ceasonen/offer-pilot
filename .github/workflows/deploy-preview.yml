@@ -1,0 +1,10 @@
+name: Deploy Preview Hint
+
+on:
+  pull_request:
+
+jobs:
+  info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Use Vercel Git Integration for PR preview deployments."

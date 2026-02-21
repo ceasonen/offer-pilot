@@ -1,0 +1,14 @@
+[
+  {
+    "id": "react-key-001",
+    "question": "React 列表渲染为什么必须设置稳定 key？",
+    "difficulty": 2,
+    "tags": ["react", "reconcile"]
+  },
+  {
+    "id": "react-hook-002",
+    "question": "useEffect 的依赖数组应该怎么设计？",
+    "difficulty": 3,
+    "tags": ["react", "hooks"]
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sys-dist-001",
+    "question": "分布式事务有哪些实现方式？各有什么代价？",
+    "difficulty": 4,
+    "tags": ["system-design", "distributed"]
+  }
+]

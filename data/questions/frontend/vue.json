@@ -1,0 +1,8 @@
+[
+  {
+    "id": "vue-reactive-001",
+    "question": "Vue3 响应式系统相比 Vue2 有哪些变化？",
+    "difficulty": 3,
+    "tags": ["vue", "reactivity"]
+  }
+]

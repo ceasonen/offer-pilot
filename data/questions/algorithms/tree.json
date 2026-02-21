@@ -1,0 +1,8 @@
+[
+  {
+    "id": "algo-tree-001",
+    "question": "二叉树最近公共祖先的常见解法有哪些？",
+    "difficulty": 3,
+    "tags": ["algorithm", "tree"]
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "perf-lcp-001",
+    "question": "如何系统性优化 LCP 指标？",
+    "difficulty": 3,
+    "tags": ["performance", "web-vitals"]
+  }
+]

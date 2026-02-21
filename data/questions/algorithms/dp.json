@@ -1,0 +1,8 @@
+[
+  {
+    "id": "algo-dp-001",
+    "question": "动态规划解题的状态定义和转移方程如何确定？",
+    "difficulty": 3,
+    "tags": ["algorithm", "dp"]
+  }
+]

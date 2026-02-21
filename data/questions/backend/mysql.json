@@ -1,0 +1,8 @@
+[
+  {
+    "id": "mysql-index-001",
+    "question": "MySQL 索引失效的常见场景有哪些？",
+    "difficulty": 3,
+    "tags": ["mysql", "index"]
+  }
+]

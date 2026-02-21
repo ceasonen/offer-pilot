@@ -1,0 +1,8 @@
+[
+  {
+    "id": "spring-ioc-001",
+    "question": "Spring IoC 和 AOP 的核心作用是什么？",
+    "difficulty": 2,
+    "tags": ["spring", "java"]
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "go-gmp-001",
+    "question": "GMP 调度模型如何工作？",
+    "difficulty": 3,
+    "tags": ["golang", "runtime"]
+  }
+]

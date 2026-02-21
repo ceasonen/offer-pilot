@@ -1,0 +1,14 @@
+[
+  {
+    "id": "js-closure-001",
+    "question": "请解释闭包及其常见应用场景。",
+    "difficulty": 2,
+    "tags": ["javascript", "closure"]
+  },
+  {
+    "id": "js-eventloop-002",
+    "question": "事件循环中宏任务和微任务的执行顺序是什么？",
+    "difficulty": 3,
+    "tags": ["javascript", "event-loop"]
+  }
+]

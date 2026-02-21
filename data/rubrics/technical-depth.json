@@ -1,0 +1,8 @@
+{
+  "name": "technicalDepth",
+  "description": "技术原理理解与推导能力",
+  "weights": {
+    "correctness": 0.5,
+    "depth": 0.5
+  }
+}
