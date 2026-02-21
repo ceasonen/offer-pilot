@@ -75,9 +75,10 @@ export function InterviewRoom() {
   const apiKey = useConfigStore((s) => s.apiKey);
   const hydrateConfig = useConfigStore((s) => s.hydrate);
 
-  const { messages, sendMessage, status } = useChat();
+  const { messages, sendMessage, status, error, clearError } = useChat();
 
-  const isLoading = status !== 'ready';
+  const isLoading = status === 'submitted' || status === 'streaming';
+  const needsApiKey = provider !== 'ollama' && !apiKey.trim();
 
   useEffect(() => {
     hydrateConfig();
@@ -90,7 +91,7 @@ export function InterviewRoom() {
   }, [config, router]);
 
   useEffect(() => {
-    if (!config || bootstrapped.current || messages.length > 0) return;
+    if (!config || bootstrapped.current || messages.length > 0 || needsApiKey) return;
 
     bootstrapped.current = true;
     void sendMessage(
@@ -105,7 +106,7 @@ export function InterviewRoom() {
         },
       },
     );
-  }, [apiKey, config, messages.length, provider, sendMessage]);
+  }, [apiKey, config, messages.length, needsApiKey, provider, sendMessage]);
 
   const visibleMessages: DisplayMessage[] = useMemo(
     () =>
@@ -123,7 +124,8 @@ export function InterviewRoom() {
 
   const submitAnswer = async () => {
     const content = input.trim();
-    if (!content || isLoading) return;
+    if (!content || isLoading || needsApiKey) return;
+    if (error) clearError();
 
     const lastQuestion = [...visibleMessages]
       .reverse()
@@ -277,6 +279,18 @@ export function InterviewRoom() {
             结束面试
           </Button>
         </div>
+
+        {needsApiKey ? (
+          <div className="mx-4 mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+            当前模型是 {provider}，但未检测到 API Key。请先到设置页保存 Key，再开始面试。
+          </div>
+        ) : null}
+
+        {error ? (
+          <div className="mx-4 mt-4 rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+            模型请求失败：{error.message}
+          </div>
+        ) : null}
 
         <ChatPanel messages={visibleMessages} company={config.company} loading={isLoading} />
 
